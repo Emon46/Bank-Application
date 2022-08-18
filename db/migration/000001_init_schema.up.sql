@@ -1,10 +1,9 @@
 CREATE TABLE "account" (
-                           "id" int PRIMARY KEY,
+                           "id" bigserial PRIMARY KEY,
                            "owner" varchar NOT NULL,
                            "balance" bigint NOT NULL,
                            "currency" varchar NOT NULL,
-                           "created_at" timestamptz NOT NULL DEFAULT (now()),
-                           "country_code" int
+                           "created_at" timestamptz NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE "entries" (
