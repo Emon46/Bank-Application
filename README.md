@@ -10,3 +10,9 @@
 
 ## Database Design
 <img src="image/bank-db-design.png"/>
+
+## Viper
+  - find, load, unmarshal config file (json, yaml, toml, env, ini)
+  - read config from env variables
+  - read config from remote system etcd, consul
+  - live watcher for changing config files
