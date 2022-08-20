@@ -14,4 +14,6 @@ test:
 	go test -v -cover ./...
 sqlc:
 	sqlc generate
-.PHONY: fmt postgres createdb migrateup migratedown
+server:
+	go run main.go
+.PHONY: fmt postgres createdb migrateup migratedown sqlc test server
