@@ -16,3 +16,7 @@
   - read config from env variables
   - read config from remote system etcd, consul
   - live watcher for changing config files
+## mock database for test
+  - isolates test data to avoid conflicts
+  - faster to test
+  - can achieve 100% test coverage
