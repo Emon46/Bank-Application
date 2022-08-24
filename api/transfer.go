@@ -2,8 +2,10 @@ package api
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	db "github.com/emon46/bank-application/db/sqlc"
+	"github.com/emon46/bank-application/token"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -21,12 +23,21 @@ func (server *Server) createTransfer(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	if !server.validateAccount(ctx, req.FromAccountID, req.Currency) {
+	fromAcc, ok := server.validateAccount(ctx, req.FromAccountID, req.Currency)
+	if !ok {
 		return
 	}
-	if !server.validateAccount(ctx, req.ToAccountID, req.Currency) {
+	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
+	if authPayload.Username != fromAcc.Owner {
+		err := errors.New("from account doesn't belong to the authenticated user")
+		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
 		return
 	}
+	_, ok = server.validateAccount(ctx, req.ToAccountID, req.Currency)
+	if !ok {
+		return
+	}
+
 	arg := db.TransferTxParams{
 		FromAccountID: req.FromAccountID,
 		ToAccountID:   req.ToAccountID,
@@ -40,20 +51,20 @@ func (server *Server) createTransfer(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, acc)
 }
 
-func (server *Server) validateAccount(ctx *gin.Context, accountID int64, currency string) bool {
+func (server *Server) validateAccount(ctx *gin.Context, accountID int64, currency string) (db.Account, bool) {
 	account, err := server.store.GetAccount(ctx, accountID)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			ctx.JSON(http.StatusNotFound, errorResponse(err))
-			return false
+			return account, false
 		}
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return false
+		return account, false
 	}
 	if account.Currency != currency {
 		ctx.JSON(http.StatusBadRequest, errorResponse(fmt.Errorf("account [%d] currency mismatched. required %s get %s", accountID, account.Currency, currency)))
-		return false
+		return account, false
 	}
 
-	return true
+	return account, true
 }
