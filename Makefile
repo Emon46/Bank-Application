@@ -24,6 +24,10 @@ fmt:
 
 test:
 	go test -v -cover ./...
+test-coverage:
+	go test ./... -coverprofile=test-coverage.out -covermode count
+	go tool cover -func=test-coverage.out | grep total | grep -Eo '[0-9]+\.[0-9]+'
+	rm -rf test-coverage.out
 
 sqlc:
 	sqlc generate
