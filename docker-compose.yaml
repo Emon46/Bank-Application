@@ -1,0 +1,22 @@
+version: "3.9"
+services:
+  postgres:
+    image: postgres:14.5
+    environment:
+      - POSTGRES_PASSWORD=secret1234
+      - POSTGRES_DB=simple_bank
+      - POSTGRES_USER=postgres
+    expose:
+      - "5432:5432"
+  webapp:
+    build:
+      context: .
+      dockerfile: Dockerfile # docker file name
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    environment:
+      - DB_SOURCE=postgresql://postgres:secret1234@postgres:5432/simple_bank?sslmode=disable
+    entrypoint: ["/app/wait-for.sh", "postgres:5432", "--", "/app/start.sh"]
+    command: ["/app/bank-app"]
