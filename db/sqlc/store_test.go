@@ -2,7 +2,6 @@ package db
 
 import (
 	"context"
-	"fmt"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
@@ -93,7 +92,6 @@ func Test_TransferTxDeadLock(t *testing.T) {
 	store := NewStore(testDB)
 	fromAcc := createRandomAccount(t)
 	toAcc := createRandomAccount(t)
-	fmt.Println(">> before:  ", fromAcc.Balance, toAcc.Balance)
 	n := 10
 	amount := int64(5)
 	errs := make(chan error)
@@ -127,7 +125,6 @@ func Test_TransferTxDeadLock(t *testing.T) {
 	require.NoError(t, err)
 	updatedToAcc, err := testQueries.GetAccount(context.TODO(), toAcc.ID)
 	require.NoError(t, err)
-	fmt.Println(">> after:  ", updatedFromAcc.Balance, updatedToAcc.Balance)
 
 	require.Equal(t, fromAcc.Balance, updatedFromAcc.Balance)
 	require.Equal(t, toAcc.Balance, updatedToAcc.Balance)
