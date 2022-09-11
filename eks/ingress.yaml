@@ -29,13 +29,13 @@ spec:
                 name: bank-api-service
                 port:
                   number: 80
-#    - host: "*.foo.com"
+#    - host: "localhost"
 #      http:
 #        paths:
 #          - pathType: Prefix
-#            path: "/foo"
+#            path: "/"
 #            backend:
 #              service:
-#                name: service2
+#                name: db-svc
 #                port:
-#                  number: 80
+#                  number: 5432
