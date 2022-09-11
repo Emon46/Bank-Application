@@ -11,6 +11,11 @@
 ## Database Design
 <img src="image/bank-db-design.png"/>
 
+## migrate commands
+```
+migrate create -ext sql -dir db/migration -seq add_sessions
+```
+
 ## Viper
   - find, load, unmarshal config file (json, yaml, toml, env, ini)
   - read config from env variables
